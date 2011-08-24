@@ -7,13 +7,6 @@ Created on 13.08.2011
 import feedparser
 import re
 
-def getwords(html):
-    # Remove all the HTML tags
-    txt=re.compile(r'<[^>]+>').sub('',html)
-    # Split words by all non-alpha characters
-    words=re.compile(r'[^A-Z^a-z]+').split(txt)
-    # Convert to lower case
-    return [word.lower() for word in words if word!='']
 
 # Returns title and dictionary of word counts for an RSS feed
 def getwordcounts(url):
@@ -41,17 +34,26 @@ def getwordcounts(url):
     
     return title,wc
     
+def getwords(html):
+    # Remove all the HTML tags
+    txt=re.compile(r'<[^>]+>').sub('',html)
+    # Split words by all non-alpha characters
+    words=re.compile(r'[^A-Z^a-z]+').split(txt)
+    # Convert to lower case
+    return [word.lower() for word in words if word!='']
+    
 
 apcount = {}
 wordcounts = {}
 feedlist = [line for line in file('feedlist.txt')]
 for feedurl in feedlist:
     try:
+        print 'Parsing %s...' % feedurl
         title,wc = getwordcounts(feedurl)
         wordcounts[title] = wc
         for word, count in wc.items():
             apcount.setdefault(word, 0)
-            if count > 0:
+            if count > 1:
                 apcount[word] += 1
     except:
         print 'Failed to parse feed %s' % feedurl
@@ -71,6 +73,7 @@ for word in wordlist:
 out.write('\n')
 
 for blog, wc in wordcounts.items():
+    print blog
     out.write(blog)
     for word in wordlist:
         if word in wc:
@@ -78,3 +81,5 @@ for blog, wc in wordcounts.items():
         else:
             out.write('\t0')
     out.write('\n')
+
+print 'All blogs parsed!'
