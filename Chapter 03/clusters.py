@@ -147,10 +147,5 @@ def drawnode(draw,clust,x,y,scaling,labels):
     else:   
         # If this is an endpoint, draw the item label
         draw.text((x+5,y-7),labels[clust.id],(0,0,0))
-                
 
-    
-blognames,words,data=readfile('blogdata.txt')
-clust=hcluster(data)
-drawdendrogram(clust,blognames,jpeg='blogclust.jpg')
-print 'Finished drawing dendrogram!'
+
