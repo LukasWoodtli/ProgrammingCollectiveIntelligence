@@ -88,6 +88,24 @@ def hcluster(rows, distance=pearson):
         
     return clust[0]
 
+
+def printclust(clust,labels=None,n=0):
+    #indent to make a hierarchy layout
+    for i in range(n): print ' ',
+    if clust.id<0:
+        # negative id means that this is branch
+        print '-'
+    else:
+        # positive id means that this is an endpoint
+        if labels==None: print clust.id
+        else: print labels[clust.id]
+        
+    # now print the right and left branches    
+    if clust.left!=None: printclust(clust.left,labels=labels,n=n+1)
+    if clust.right!=None: printclust(clust.right,labels=labels,n=n+1)
+
+          
+
 def getheight(clust):
     # Is this an endpoint? Then the height is just 1
     if clust.left==None and clust.right==None: return 1
@@ -103,7 +121,7 @@ def getdepth(clust):
     # The distance of a branch is the greater of its two sides
     # plus its own distance
     return max(getdepth(clust.left),getdepth(clust.right))+clust.distance
-    
+
 
 def drawdendrogram(clust, labels, jpeg='clusters.jpg'):
     # height and width
@@ -123,6 +141,7 @@ def drawdendrogram(clust, labels, jpeg='clusters.jpg'):
     # Draw the first node
     drawnode(draw,clust,10,(h/2),scaling, labels)
     img.save(jpeg, 'JPEG')
+    print 'Finished drawing dendrogram!'
 
 def drawnode(draw,clust,x,y,scaling,labels):
     if clust.id<0:
@@ -149,3 +168,52 @@ def drawnode(draw,clust,x,y,scaling,labels):
         draw.text((x+5,y-7),labels[clust.id],(0,0,0))
 
 
+def rotatematrix(data):
+    newdata=[]
+    for i in range(len(data[0])):
+        newrow=[data[j][i] for j in range(len(data))]
+        newdata.append(newrow)
+    return newdata
+
+import random
+
+def kcluster(rows,distance=pearson,k=4):
+    # Determine the minimum and maximum values for each point
+    ranges=[(min([row[i] for row in rows]),max([row[i] for row in rows]))
+    for i in range(len(rows[0]))]
+    
+    # Create k randomly placed centroids
+    clusters=[[random.random()*(ranges[i][1]-ranges[i][0])+ranges[i][0]
+    for i in range(len(rows[0]))] for j in range(k)]
+    
+    lastmatches=None
+    for t in range(100):
+        print 'Iteration %d' % t
+        bestmatches=[[] for i in range(k)]
+        
+        # Find which centroid is the closest for each row
+        for j in range(len(rows)):
+            row=rows[j]
+            bestmatch=0
+            for i in range(k):
+                d=distance(clusters[i],row)
+                if d<distance(clusters[bestmatch],row): bestmatch=i
+            bestmatches[bestmatch].append(j)
+            
+            # If the results are the same as last time, this is complete
+            if bestmatches==lastmatches: break
+            lastmatches=bestmatches
+            
+            # Move the centroids to the average of their members
+            for i in range(k):
+                avgs=[0.0]*len(rows[0])
+                if len(bestmatches[i])>0:
+                    for rowid in bestmatches[i]:
+                        for m in range(len(rows[rowid])):
+                            avgs[m]+=rows[rowid][m]
+                    for j in range(len(avgs)):
+                        avgs[j]/=len(bestmatches[i])
+                    clusters[i]=avgs
+    
+    return bestmatches
+  
