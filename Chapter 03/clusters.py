@@ -176,7 +176,7 @@ def rotatematrix(data):
 import random
 
 def kcluster(rows,distance=pearson,k=4):
-  # Determine the minimum and maximum values for each point
+  # Determine the minimum and maximum values for each column (point)
   # get max and min values for each column
   ranges=[(min([row[i] for row in rows]),max([row[i] for row in rows])) 
   for i in range(len(rows[0]))]
