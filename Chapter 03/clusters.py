@@ -177,16 +177,19 @@ import random
 
 def kcluster(rows,distance=pearson,k=4):
   # Determine the minimum and maximum values for each point
+  # get max and min values for each column
   ranges=[(min([row[i] for row in rows]),max([row[i] for row in rows])) 
   for i in range(len(rows[0]))]
 
   # Create k randomly placed centroids
+  # k clusters. Each has for every column a random value in the range calculated before
   clusters=[[random.random()*(ranges[i][1]-ranges[i][0])+ranges[i][0] 
   for i in range(len(rows[0]))] for j in range(k)]
   
   lastmatches=None
   for t in range(100):
     print 'Iteration %d' % t
+    # best matches is a list for each of the k centroids 
     bestmatches=[[] for i in range(k)]
     
     # Find which centroid is the closest for each row
@@ -215,3 +218,12 @@ def kcluster(rows,distance=pearson,k=4):
       
   return bestmatches
   
+def tanimoto(v1,v2):
+  c1,c2,shr=0,0,0
+  
+  for i in range(len(v1)):
+    if v1[i]!=0: c1+=1  # in v1
+    if v2[i]!=0: c2+=1 # in v2
+    if v1[i]!=0 and v2[i]!=0: shr+=1 # in both
+    
+  return 1.0-(float(shr)/(c1+c2-shr))
