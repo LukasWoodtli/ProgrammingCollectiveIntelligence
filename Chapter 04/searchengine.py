@@ -6,7 +6,7 @@ Created on 11.09.2011
 
 import urllib2
 import sys
-from BeautifulSoup import *
+from bs4 import BeautifulSoup
 from urlparse import urljoin
 from pysqlite2 import dbapi2 as sqlite
 
@@ -187,6 +187,7 @@ class searcher:
     
     # Create the query from the seperate parts
     fullquery='select %s from %s where %s' % (fieldlist,tablelist,clauselist)
+    print fullquery
     cur=self.con.execute(fullquery)
     rows=[row for row in cur]
     
