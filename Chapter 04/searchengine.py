@@ -9,6 +9,7 @@ import sys
 from bs4 import BeautifulSoup
 from urlparse import urljoin
 from pysqlite2 import dbapi2 as sqlite
+import re
 
 # Create a list of words to ignore
 ignorewords = set(['the', 'of', 'to', 'and', 'a', 'in', 'is', 'it'])
