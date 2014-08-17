@@ -5,9 +5,10 @@ Created on 30.08.2011
 '''
 
 import urllib2
-from BeautifulSoup import BeautifulSoup
+from bs4 import BeautifulSoup
 
-c=urllib2.urlopen('http://kiwitobes.com/wiki/Programming_language.html')
+#c=urllib2.urlopen('http://kiwitobes.com/wiki/Programming_language.html')
+c=urllib2.urlopen('http://segaran.com/wiki/Programming_language.html')
 soup=BeautifulSoup(c.read())
 links= soup('a')
 print links[10]
