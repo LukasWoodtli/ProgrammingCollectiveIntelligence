@@ -6,8 +6,9 @@ Created on 11.09.2011
 
 import searchengine
 
+pagelist=['http://segaran.com/wiki/Categorical_list_of_programming_languages.html']
 #pagelist=['http://kiwitobes.com/wiki/Categorical_list_of_programming_languages.html']
-pagelist=['http://en.wikipedia.org/wiki/List_of_programming_languages']
+#pagelist=['http://en.wikipedia.org/wiki/List_of_programming_languages']
 crawler=searchengine.crawler('searchindex.db')
 
 # Execute this line only if database not yet created
